@@ -45,7 +45,13 @@ def on_message(client, userdata, msg):
             alert_counts[vehicle_id] = 1
         
         if alert_counts[vehicle_id] >= ALERT_THRESHOLD:
-            print(f"Pengemudi dengan Nopol {vehicle_id} Ngantuk Berat, Tidak Diizinkan Mengemudi!")
+            alert_message = f"Pengemudi dengan Nopol {vehicle_id} Ngantuk Berat, Tidak Diizinkan Mengemudi!"
+            print(alert_message)
+            
+            # Publish alert message to the topic
+            client.publish(f"sensor/drowsiness/{vehicle_id}", alert_message)
+            
+            # Reset count after publishing
             alert_counts[vehicle_id] = 0
 
 def save_to_csv(vehicle_id, payload):
